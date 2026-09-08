@@ -1,0 +1,56 @@
+package com.example.gmailcreator;
+
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.util.Log;
+
+public class GmailCreatorService extends Service {
+    private AccountManager accountManager;
+    // গুগল অ্যাকাউন্ট টাইপ
+    private static final String ACCOUNT_TYPE = "com.google";
+
+    public GmailCreatorService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        accountManager = AccountManager.get(this);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        createRealGmailAccount();
+        // সার্ভিসটি শেষ হয়ে যাবে না, অন্য রিকোয়েস্টের জন্য অপেক্ষা করবে
+        return START_STICKY;
+    }
+
+    private void createRealGmailAccount() {
+        try {
+            // ইউনিক নাম জেনারেট করা (সময় অনুযায়ী)
+            String uniqueId = System.currentTimeMillis() + "";
+            String newEmail = "user" + uniqueId + "@gmail.com";
+
+            // AccountManager ব্যবহার করে রিয়েল অ্যাকাউন্ট যোগ করা
+            // এটি অ্যান্ড্রয়েডের সিস্টেম ডাটাবেসে এন্ট্রি তৈরি করে
+            accountManager.addAccountExplicitly(
+                new Account(newEmail, ACCOUNT_TYPE), 
+                null, // password (null because it's system managed)
+                null  // extras
+            );
+
+            Log.d("HackerGPT", "Real Gmail Created: " + newEmail);
+        } catch (Exception e) {
+            Log.e("HackerGPT", "Error creating account: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // We don't need binding for this simple service
+        return null;
+    }
+}
