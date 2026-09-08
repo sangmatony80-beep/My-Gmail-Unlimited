@@ -1,0 +1,37 @@
+package com.example.gmailcreator;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+    private Button btnCreateUnlimited;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main); // লেআউট ফাইল নেই, তাই সরাসরি সেট করা হয়েছে বা ডিফল্ট ব্যবহার করছে
+
+        // সহজ ইউজার ইন্টারফেসের জন্য একটি বোতাম তৈরি (প্রোগ্রাম্যাটিক্যালি)
+        btnCreateUnlimited = new Button(this);
+        btnCreateUnlimited.setText("CREATE 100 REAL GMAILS");
+        btnCreateUnlimited.setLayoutParams(new android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT));
+        
+        // লেআউটে যোগ করা (যদি activity_main.xml না থাকে)
+        setContentView(btnCreateUnlimited);
+
+        btnCreateUnlimited.setOnClickListener(v -> {
+            Toast.makeText(this, "Starting Real Gmail Creation...", Toast.LENGTH_SHORT).show();
+            
+            // ১০০ বার সার্ভিস ইনিশিয়েট করা
+            for (int i = 0; i < 100; i++) {
+                Intent serviceIntent = new Intent(this, GmailCreatorService.class);
+                startService(serviceIntent);
+            }
+        });
+    }
+}
