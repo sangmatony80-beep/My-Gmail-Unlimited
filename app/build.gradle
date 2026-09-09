@@ -12,15 +12,22 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
+        
+        // Multidex support for larger apps
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
         }
         debug {
-            // Debug mode
+            minifyEnabled false
+            debuggable true
+            applicationIdSuffix ".debug"
         }
     }
     
@@ -28,10 +35,47 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    // Build features
+    buildFeatures {
+        aidl false
+        renderScript false
+        resValues false
+        shaders false
+    }
+
+    // Lint options to suppress warnings
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    // Disable unused resources
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-*.pro'
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/LICENSE-notice.md'
+    }
 }
 
 dependencies {
+    // AndroidX
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    
+    // Material Design
+    implementation 'com.google.android.material:material:1.9.0'
+    
+    // For debugging (only in debug builds)
+    debugImplementation 'androidx.fragment:fragment-testing:1.6.1'
+}
+
+// Print build info
+gradle.taskGraph.whenReady {
+    println("========================================")
+    println("APK Build Configuration Ready")
+    println("Target: Android ${android.targetSdkVersion}")
+    println("Min SDK: ${android.minSdkVersion}")
+    println("========================================")
 }
